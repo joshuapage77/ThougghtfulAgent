@@ -1,0 +1,133 @@
+services:
+  opensearch-qa-1:
+    env_file:
+        - ../.env
+    image: opensearchproject/opensearch:latest
+    container_name: opensearch-qa-1
+    environment:
+      - cluster.name=opensearch-qa-cluster
+      - node.name=opensearch-qa-1
+      - discovery.seed_hosts=opensearch-qa-1,opensearch-qa-2
+      - cluster.initial_master_nodes=opensearch-qa-1,opensearch-qa-2
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - plugins.security.disabled=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - opensearch-qa-data1:/usr/share/opensearch/data
+    ports:
+      - 9200:9200
+      - 9600:9600
+    networks:
+      - thoughtful-backend
+    healthcheck:
+      test: ["CMD", "sh", "-c", "curl -fsSL http://opensearch-qa-1:9200/_cluster/health | grep -q '\"status\":\"green\"'"]
+      interval: 10s
+      retries: 15
+      start_period: 60s
+      timeout: 5s
+
+  opensearch-qa-2:
+    env_file:
+      - ../.env
+    image: opensearchproject/opensearch:latest
+    container_name: opensearch-qa-2
+    environment:
+      - cluster.name=opensearch-qa-cluster
+      - node.name=opensearch-qa-2
+      - discovery.seed_hosts=opensearch-qa-1,opensearch-qa-2
+      - cluster.initial_master_nodes=opensearch-qa-1,opensearch-qa-2
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - plugins.security.disabled=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - opensearch-qa-data2:/usr/share/opensearch/data
+    networks:
+      - thoughtful-backend
+
+  opensearch-qa-dashboards:
+    image: opensearchproject/opensearch-dashboards:latest
+    container_name: opensearch-qa-dashboards
+    ports:
+      - 5601:5601
+    expose:
+      - "5601"
+    environment:
+      - 'OPENSEARCH_HOSTS=["http://opensearch-qa-1:9200","http://opensearch-qa-2:9200"]'
+      - "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true"
+    networks:
+      - thoughtful-backend
+
+  postgres-qa:
+    image: postgres:latest
+    container_name: postgres-qa
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: p0stgr3s
+      POSTGRES_DB: thoughtful_db
+      POSTGRES_INITDB_ARGS: "--auth-host=md5"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-qa-data:/var/lib/postgresql/data
+      - ../api/migrations/flyway/sql:/flyway/sql
+    networks:
+      - thoughtful-backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d thoughtful_db"]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+  
+  flyway-qa:
+    image: flyway/flyway
+    container_name: flyway-qa
+    depends_on:
+      postgres-qa:
+        condition: service_healthy
+    networks:
+      - thoughtful-backend
+    volumes:
+      - ../api/migrations/flyway/sql:/flyway/sql
+    environment:
+      - FLYWAY_URL=jdbc:postgresql://postgres-qa:5432/thoughtful_db
+      - FLYWAY_USER=postgres
+      - FLYWAY_PASSWORD=p0stgr3s
+      - FLYWAY_LOCATIONS=filesystem:/flyway/sql
+    command: migrate -X
+
+  opensearch-qa-init:
+    image: node:latest
+    container_name: opensearch-qa-init
+    depends_on:
+      opensearch-qa-1:
+        condition: service_healthy
+    volumes:
+      - ../api:/api
+    networks:
+      - thoughtful-backend
+    working_dir: /api
+    entrypoint: ["node", "./src/utils/scripts/opensearchAutomate.js"]
+
+
+volumes:
+  opensearch-qa-data1:
+  opensearch-qa-data2:
+  postgres-qa-data:
+
+networks:
+  thoughtful-backend:

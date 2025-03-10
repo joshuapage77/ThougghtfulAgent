@@ -1,0 +1,19 @@
+{
+  "name": "thoughfulagent",
+  "version": "1.0.0",
+  "description": "This implements a customer support AI Agent to assist users with basic questions about Thoughtful AI. The agent will use predefined, hardcoded responses to answer common questions.",
+  "main": "index.js",
+  "scripts": {
+    "docker": "cd docker && docker compose up -d",
+    "api": "cd api && npm run dev",
+    "web": "cd web && npm run dev",
+    "launch": "open http://localhost:8000",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "open": "^10.1.0"
+  }
+}

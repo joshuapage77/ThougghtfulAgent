@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thoughtful Chat</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        :root {
+            --off-black: #1a1a1a;
+            --black: black;
+            --orange: #ff9e00;
+            --bg-offwhite: #f6f8fa;
+            --tomato: #ff3b48;
+            --tomato-rgb: 255, 59, 72;
+            --pure-white: white;
+            --light-navy: #dce2f6;
+            --pink: #e52a71;
+            --dark-violet: #a500dd;
+            --main-blue-official: #070c29;
+            --soft-navy: #879ec3;
+            --main-blue: #070b26;
+            --grad1: #d8b4dc;
+            --grad2: #c4cbeb;
+            --grad3: #489fdb;
+            --main-blue-light: #0c133d;
+            --light-grey: #ebebeb;
+            --midnight-blue: #14235a;
+            --dark1: #5a4c7a;
+            --dark2: #204990;
+            --medium-spring-green: #57ec9c;
+            --navy-medium: #323a53;
+            --navy-medium-rgb: 50, 58, 83;
+            --link-text-color: #204990;
+            --grey: #ccc;
+            --dim-grey: #707070;
+            --darker-off-white: #f0f4f7;
+            --dark-purp: #4b4c81;
+            --new-blue: #1f3167;
+            --stroke-dashoffset-var: 200px;
+        }
+
+        body {
+            background-image: url('thoughtfulBackgroundLeft.png');
+            background-size: contain;
+            /* Try 'cover', 'contain', or specific sizes */
+            background-position: Left;
+            background-repeat: no-repeat;
+
+            font-family: 'Inter', sans-serif;
+            background-color: var(--main-blue-official);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+
+            /* shit from their website */
+            color: var(--off-black);
+            font-family: Inter-TA, Arial, sans-serif;
+
+            font-weight: 300;
+            line-height: 1.4;
+
+        }
+
+        .chat-container {
+            width: 80%;
+            height: 80%;
+            max-width: 600px;
+            background-color: rgba(var(--navy-medium-rgb), 0.6);
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-history {
+            background-color: rgba(var(--navy-medium-rgb), 0.3);
+            flex-grow: 1;
+            overflow-y: auto;
+            height: 300px;
+            border-bottom: 2px solid #E0E0E0;
+            padding: 10px;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            padding-top: 10px;
+        }
+
+        .message-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #E0E0E0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .user-message {
+            text-align: right;
+            background-color: var(--dark-violet);
+            color: white;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 12px;
+            max-width: 75%;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .assistant-message {
+            text-align: left;
+            background-color: var(--orange);
+            color: white;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 12px;
+            max-width: 75%;
+            align-self: flex-start;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border: 3px solid rgba(0, 0, 0, 0.3);
+            border-top: 3px solid var(--orange);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        .button {
+            background: linear-gradient(90deg, var(--orange), var(--tomato), var(--dark-violet));
+        }
+
+        .title-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            margin: 0;
+            padding: 8px;
+            width: 100%;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(90deg, var(--orange), var(--tomato), var(--dark-violet));
+        }
+
+        .api-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        #apiHost {
+            flex-grow: 1;
+        }
+
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="title-bar">ThoughtfulAi Agent</div>
+    <div class="chat-container">
+        <div class="api-container">
+            <input type="text" id="apiHost" placeholder="API Host (e.g., http://localhost:3000)"
+                value="http://localhost:3000">
+            <button id="newConversation">New Conversation</button>
+        </div>
+        <div class="message-history" id="messageHistory"></div>
+        <div class="input-container">
+            <input type="text" id="messageInput" class="message-input" placeholder="Type a message...">
+            <button id="sendMessage">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const apiHostInput = document.getElementById("apiHost");
+        const newConversationButton = document.getElementById("newConversation");
+        const messageHistory = document.getElementById("messageHistory");
+        const messageInput = document.getElementById("messageInput");
+        const sendMessageButton = document.getElementById("sendMessage");
+
+        let conversationId = getCookie("conversationId");
+
+        async function createConversation() {
+            try {
+                const response = await fetch(`${apiHostInput.value}/chat`, { method: "POST" });
+                const data = await response.json();
+                if (data.status === 200) {
+                    conversationId = data.data.conversationId;
+                    setCookie("conversationId", conversationId, 7);
+                    loadHistory();
+                }
+            } catch (error) {
+                console.error("Error creating conversation:", error);
+            }
+        }
+
+        async function loadHistory() {
+            if (!conversationId) {
+                await createConversation();
+                return;
+            }
+            try {
+                const response = await fetch(`${apiHostInput.value}/chat/${conversationId}`);
+                const data = await response.json();
+                if (data.status === 200) {
+                    messageHistory.innerHTML = "";
+                    data.data.messages.forEach(msg => appendMessage(msg.role, msg.content, msg.createDate));
+                }
+            } catch (error) {
+                console.error("Error loading history:", error);
+                appendMessage("assistant", "There was a problem loading the chat history.");
+            }
+        }
+
+        async function sendMessage() {
+            if (!messageInput.value.trim()) return;
+            const userMessage = messageInput.value;
+            messageInput.value = "";
+            const spinner = appendMessage("user", userMessage, new Date().toISOString(), true);
+            sendMessageButton.disabled = true;
+            try {
+                const response = await fetch(`${apiHostInput.value}/chat/${conversationId}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: userMessage })
+                });
+                const data = await response.json();
+                if (data.status === 200) {
+                    removeSpinner(spinner);
+                    appendMessage("assistant", data.data, new Date().toISOString());
+                } else {
+                    removeSpinner(spinner);
+                    appendMessage("assistant", "There was an issue processing your request.");
+                }
+            } catch (error) {
+                console.error("Error sending message:", error);
+                removeSpinner(spinner);
+                appendMessage("assistant", "There was a problem sending your message.");
+            } finally {
+                sendMessageButton.disabled = false;
+            }
+        }
+
+        function appendMessage(role, content, timestamp, showSpinner = false) {
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add(role === "user" ? "user-message" : "assistant-message");
+            let displayTime = "";
+            if (timestamp) {
+                const date = new Date(timestamp);
+                const now = new Date();
+                const isToday = date.toDateString() === now.toDateString();
+                const isRecent = (now - date) < 120000;
+                if (!isRecent) displayTime = isToday ? date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : date.toLocaleDateString();
+            }
+            messageDiv.innerHTML = `${content} <br><small>${displayTime}</small>`;
+            if (showSpinner) {
+                const spinner = document.createElement("div");
+                spinner.classList.add("spinner");
+                messageDiv.appendChild(spinner);
+                messageDiv.spinner = spinner;
+            }
+            messageHistory.appendChild(messageDiv);
+            messageHistory.scrollTop = messageHistory.scrollHeight;
+            return messageDiv;
+        }
+
+        function removeSpinner(messageDiv) {
+            if (messageDiv.spinner) {
+                messageDiv.spinner.remove();
+                delete messageDiv.spinner;
+            }
+        }
+
+        function setCookie(name, value, days) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+        }
+
+        function getCookie(name) {
+            const cookies = document.cookie.split("; ");
+            for (let c of cookies) {
+                const [key, val] = c.split("=");
+                if (key === name) return val;
+            }
+            return "";
+        }
+
+        newConversationButton.addEventListener("click", createConversation);
+        sendMessageButton.addEventListener("click", sendMessage);
+        messageInput.addEventListener("keypress", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+
+        loadHistory();
+    </script>
+</body>
+
+</html>
