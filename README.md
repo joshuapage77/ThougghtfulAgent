@@ -26,7 +26,6 @@ This implements a customer support AI Agent to assist users with basic questions
 * web - Simple html front end served by http-server library
 * docker - contains docker-compose.yml which creates containers for Opensearch cluser, Postgres, Flyway, and Opensearch-init
 
-
 ## Running Locally
 ### Prerequisites
 * install docker with the docker compose plugin
@@ -40,11 +39,7 @@ All three components will need to be started to run the application. They can be
 * Launch Chat:  `$ npm run launch`
    * or just browser to: http://localhost:8000/
 
-## Other
-### Check Logs:
-`$ docker compose logs -f opensearch-node1 opensearch-node2`
-
-### Shutdown
-`docker compose down`
-note: -v can be used to remove volumnes to wipe data and start over
+## Chat Examples
+![About ThoughtfulAi](assets/screenshots/chatExample1.png)
+![About Agent](assets/screenshots/chatExample2.png)
 

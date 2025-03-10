@@ -10,16 +10,18 @@ const USER = 'user'
 
 const formatMessages = (messages) => {
    return messages.map(msg => {
-     if (msg.role === SYSTEM || msg.role === ASSISTANT) return `[INST] ${msg.content} [/INST]`
-     else return `${msg.content}`
+      if (msg.role === SYSTEM || msg.role === ASSISTANT) return `[INST] ${msg.content} [/INST]`
+      else return `${msg.content}`
    }).join('\n')
- }
+}
+
+const cleanResponse = (response) => (response.replace("[INST]", "").replace("[/INST]", "").trim())
 
 const ragCompletion = async (conversation, message) => {
    const convId = conversation.id
    const messageEmbedding = await getEmbedding(message)
    const qaContext = await searchQa(messageEmbedding)
-   const history = (await getMessages(convId)).map(message => ({ role: message.role, content: message.content }))
+   const history = (await getMessages(convId, true)).map(message => ({ role: message.role, content: message.content }))
 
    const messages = [
       newMessage(SYSTEM, config.prompts.systemPrompt.replace('{context}', qaContext.map(qa => `question: ${qa.question}\nanswer: ${qa.answer}\n`).join('\n'))),
@@ -29,9 +31,10 @@ const ragCompletion = async (conversation, message) => {
 
    const finalPrompt = formatMessages(messages)
    const result = await llm.completion(finalPrompt)
+   const cleanedResponse = cleanResponse(result.text)
    await createMessage({ convId, role: USER, content: message })
-   await createMessage({ convId, role: ASSISTANT, content: result.text })
-   return result.text
+   await createMessage({ convId, role: ASSISTANT, content: cleanedResponse })
+   return cleanedResponse
 }
 
 const newMessage = (role, content) => ({ role, content })

@@ -16,8 +16,9 @@ const config = {
     host: process.env.OPENSEARCH_HOST || 'http://localhost',
     port: Number(process.env.OPENSEARCH_PORT) || 9200,
     matchingDocuments: Number(process.env.OPENSEARCH_MATCHING_DOCUMENTS) || 10,
+    maxContextQuestions: Number(process.env.OPENSEARCH_MAX_QA) || 3,
     thresholds: {
-      messageMatch: Number(process.env.OPENSEARCH_MESSAGE_MATCH_THRESHOLD) || 0.5
+      messageMatch: Number(process.env.OPENSEARCH_MESSAGE_MATCH_THRESHOLD) || 0.4
     },
     indexes: {
       qa: 'qa-index',
@@ -25,8 +26,8 @@ const config = {
   },
   chat: {
     model: process.env.CHAT_LLM_MODEL || 'mistral-7b-openorca.gguf2.Q4_0.gguf',
-    recentMessagesMax: Number(process.env.RECENT_MESSAGES_MAX) || 30,
-    intoMessage: process.env.CHAT_INTRO || `Hi! I'm the ThoughtfulAi Agent and I would be happy to answer your questions about ThoughtfulAi! I can also tell you about the technology I was built on.`
+    recentMessagesMax: Number(process.env.RECENT_MESSAGES_MAX) || 6,
+    intoMessage: process.env.CHAT_INTRO || `Hi! I'm the Thoughtful Chat Agent and I would be happy to answer your questions about ThoughtfulAi! I can also tell you about the technology I was built on.`
   },
   prompts: {
     systemPrompt: 'prompt did not load'

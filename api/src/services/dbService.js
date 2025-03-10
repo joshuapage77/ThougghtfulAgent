@@ -1,5 +1,6 @@
 const { query } = require("../wrappers/postgres")
 const { logger } = require("../utils/logger")
+const { config } = require("../config/config")
 
 const getConversation = async (id) => {
   try {
@@ -33,11 +34,24 @@ const createConversation = async () => {
   }
 }
 
-const getMessages = async (conversationId) => {
+const getMessages = async (conversationId, recent = false) => {
   try {
-    const queryText = `SELECT * FROM messages WHERE conversation_id = $1 ORDER BY create_date ASC`
-    const result = await query(queryText, [conversationId])
+    const queryAll = 'SELECT * FROM messages WHERE conversation_id = $1 ORDER BY create_date ASC'
+    const queryRecent = `
+    SELECT * FROM (
+      SELECT * FROM messages 
+      WHERE conversation_id = $1
+      ORDER BY create_date DESC 
+      LIMIT $2
+    ) sub
+    ORDER BY create_date ASC;`
 
+    const queryText = recent ? queryRecent : queryAll
+    const params = [conversationId]
+    if (recent) params.push(config.chat.recentMessagesMax)
+
+    const result = await query(queryText, params)
+    
     return result || null
   } catch (e) {
     logger.error(e, 'Error fetching messages')

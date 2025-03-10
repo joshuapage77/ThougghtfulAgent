@@ -12,7 +12,6 @@
 
 # models
 **/models/*
-!**/models/README.md
 
 # Logs
 logs

@@ -4,7 +4,6 @@ const { config } = require('../config/config')
 const { ragCompletion, newMessage, roles } = require('../orchestrators/chat')
 const llm = require ('../wrappers/llm')
 
-
 // Called when the FE first starts up and doesn't have a cookie with a previous conversation id
 // Returns conversation id
 exports.init = async (ctx) => {
@@ -31,7 +30,8 @@ exports.list = async (ctx) => {
 // returns historical messages
 exports.history = async (ctx) => {
    const convId = ctx.params.convId
-   const history = await getMessages(convId)
+   const recent = ctx.query?.recent || false
+   const history = await getMessages(convId, recent)
    history.unshift(newMessage(roles.ASSISTANT, config.chat.intoMessage))
 
    ctx.status = 200

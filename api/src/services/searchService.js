@@ -11,7 +11,7 @@ const searchQa = async (messageEmbedding) => {
     bruteForceKnnScript('questionEmbedding', messageEmbedding),
     bruteForceKnnScript('answerEmbedding', messageEmbedding)
   ]
-  const results = await searchAndReturnTopResults(config.openSearch.indexes.qa, 2, qaTemplate)
+  const results = await searchAndReturnTopResults(config.openSearch.indexes.qa, config.openSearch.maxContextQuestions, qaTemplate)
   const filteredResults = results.filter(doc => doc._score >= config.openSearch.thresholds.messageMatch)
   return filteredResults.map(obj => ({ answer: obj._source.answer, question: obj._source.question }))
 }
