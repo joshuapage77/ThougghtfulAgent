@@ -28,10 +28,13 @@ This implements a customer support AI Agent to assist users with basic questions
 
 ## Running Locally
 ### Prerequisites
-* install docker with the docker compose plugin
+* install docker CLI with the docker compose plugin
 * install npm
 * install node v23.6.0
+* From the project root execute: `$ npm run install-all`
+   * executes `npm install` in each project
 
+### Starting everything
 All three components will need to be started to run the application. They can be started from the root of the project in three separate terminals (or command prompts for windows users)
 * Start Docker: `$ npm run docker`
 * Start API:    `$ npm run api`
