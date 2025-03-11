@@ -25,10 +25,10 @@ This is a layed application built on KOA framework
       * returns next response to add to conversation history
 
 ### RAG Detail
-* For each Question an answer, embeddings are calculated and the resulting document with q/a and embeddings are indexed into opensearch (see [opensearchAutomate.js](https://github.com/joshuapage77/ThougghtfulAgent/blob/5d91b49634ddcc7e0003d1f4064a5d0ce8004981/api/src/utils/scripts/opensearchAutomate.js))
-* [chat.js](https://github.com/joshuapage77/ThougghtfulAgent/blob/5d91b49634ddcc7e0003d1f4064a5d0ce8004981/api/src/orchestrators/chat.js) implements a function for rag
+* For each Question an answer, embeddings are calculated and the resulting document with q/a and embeddings are indexed into opensearch (see [opensearchAutomate.js](https://github.com/joshuapage77/ThougghtfulAgent/blob/master/api/src/utils/scripts/opensearchAutomate.js))
+* [chat.js](https://github.com/joshuapage77/ThougghtfulAgent/blob/master/api/src/orchestrators/chat.js) implements a function for rag
   * gets the embedding for the message
   * searches opensearch for Answers and Questions (using embeddings)
-  * resulting documents are merged, sorted by relevance, and the top n pulled ([see searchService.js](https://github.com/joshuapage77/ThougghtfulAgent/blob/5d91b49634ddcc7e0003d1f4064a5d0ce8004981/api/src/services/searchService.js))
+  * resulting documents are merged, sorted by relevance, and the top n pulled ([see searchService.js](https://github.com/joshuapage77/ThougghtfulAgent/blob/master/api/src/services/searchService.js))
   * the result are filtered by a threshold defined in config (don't include poor matches)
   * The final documents (question answers groups) are added to the prompt context
