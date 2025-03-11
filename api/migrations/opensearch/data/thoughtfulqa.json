@@ -1,0 +1,68 @@
+{
+     "questions": [
+          {
+               "question": "What does the eligibility verification agent (EVA) do?",
+               "answer": "EVA automates the process of verifying a patient’s eligibility and benefits information in real-time, eliminating manual data entry errors and reducing claim rejections."
+          },
+          {
+               "question": "What does the claims processing agent (CAM) do?",
+               "answer": "CAM streamlines the submission and management of claims, improving accuracy, reducing manual intervention, and accelerating reimbursements."
+          },
+          {
+               "question": "How does the payment posting agent (PHIL) work?",
+               "answer": "PHIL automates the posting of payments to patient accounts, ensuring fast, accurate reconciliation of payments and reducing administrative burden."
+          },
+          {
+               "question": "Tell me about Thoughtful AI's Agents.",
+               "answer": "Thoughtful AI provides a suite of AI-powered automation agents designed to streamline healthcare processes. These include Eligibility Verification (EVA), Claims Processing (CAM), and Payment Posting (PHIL), among others."
+          },
+          {
+               "question": "What are the benefits of using Thoughtful AI's agents?",
+               "answer": "Using Thoughtful AI's Agents can significantly reduce administrative costs, improve operational efficiency, and reduce errors in critical processes like claims management and payment posting."
+          },
+          {
+               "question": "What technologies were used to build this agent (Thoughtful Chat)?",
+               "answer": "This project uses containerization. The tech stack includes a KOA framework on top of node.js, an Opensearch cluster as a vector database, a Postgress database, an opensource model accessed through gpt4all, and transformers.js for embeddings. The UI is a single page html"
+          },
+          {
+               "question": "How does the retrieval augmented generation (RAG) work for this agent (Thoughtful Chat)?",
+               "answer": "The origonal questions and answers, plus the additional data on how this was built was preprocessed to generate embeddings for the question and answer fields. These were indexed into Opensearch. New messages have embeddings calculated and then both the question and answer fields are searched, merged, and filtered before adding to the prompt context"
+          },
+          {
+               "question": "Why don't the responses stream from the large language model (LLM) for this agent (Thoughtful Chat)?",
+               "answer": "It was decided to make this self contained and not reliant on api keys from any company like OpenAI. gpt4all was chosen to act as an interface to opensource models. Too late in development it was realized that you can only stream responses from gpt4all with the python sdk and the projct was beging built using javascript."
+          },
+          {
+               "question": "Tell me about the Opensearch Cluster for this agent (Thoughtful Chat)",
+               "answer": "Two opensearch nodes are created an added into a cluster. Is this overkill? maybe, but the author was bored and it seemed fun"
+          },
+          {
+               "question": "How are the embeddings stored in opensearch for this agent (Thoughtful Chat)?",
+               "answer": "The index defines knn vectors of length 768 (the length returned from transformers.js), however due to the small number of documents, a script is being used to calculate distance"
+          },
+          {
+               "question": "How is the backend api structured for this agent (Thoughtful Chat)?",
+               "answer": "The backend has the following endpoints:<br>&nbsp;&nbsp;* POST /init - Starts a new conversation<br>&nbsp;&nbsp;* GET  /chat/:convId - list the conversation history<br>&nbsp;&nbsp;* POST /chat/:convId - send a new message<br>&nbsp;&nbsp;* GET /status - check status of all backend dependencies"
+          },
+          {
+               "question": "Was this agent (Thoughtful Chat) really written in 30 minutes?",
+               "answer": "Sort of? A template project used for starting experiences that contained the docker setup for postgres, opensearch, flyway, opensearch-init, and a skeleton KOA api. About 40 minutes after that the API was code complete but not tested. It took a few more hours to write docs, add this additional data, test and build the UI. The UI took a while to make it match ThoughtAi's website"
+          },
+          {
+               "question": "What is the postgres (RDBMS) database used for in this agent (Thoughtful Chat)",
+               "answer": "It only defines two tables. Conversations keeps track of (wait for it) conversations, and Messages have a many to 1 relationship to conversations so the history can be used for completions and for the UI"
+          },
+          {
+               "question": "Why was transformers.js used for embeddings for this agent (Thoughtful Chat)?",
+               "answer": "The author had never used an opensource embedding model previously and this one wouldn't require spinning up another container just to run a slim python server exposing a python embedding model. Seems to be quick enough for this usecase"
+          },
+          {
+               "question": "how were the backend technologies (gpt4all and transformers.js) chosen for this agent (Thoughtful Chat)?",
+               "answer": "The goal was to insure everything could be run on a machine with no special licensing, so opensource solutions were prioritized."
+          },
+          {
+               "question": "what opensource llm model is being used through gpt4all for this agent (Thoughtful Chat)?",
+               "answer": "mistral-7b-openorca.gguf2.Q4_0.gguf - it has 7B params, does a decent job and can run with on a GPU with only 8GB"
+          }
+     ]
+}

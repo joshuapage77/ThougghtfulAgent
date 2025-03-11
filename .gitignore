@@ -2,11 +2,6 @@
 .env
 !/.env
 
-# Uncompressed data
-**/data/*.csv
-**/data/*.json
-
-
 # temporary stuff
 **/temp*
 **/*[sS][cC][rR][aA][tT][cC][hH]*
