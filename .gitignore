@@ -1,6 +1,6 @@
 # Settings
 .env
-!/.env
+!/docker/.env
 
 # temporary stuff
 **/temp*
