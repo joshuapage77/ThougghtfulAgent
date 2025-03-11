@@ -3,7 +3,7 @@
 !/docker/.env
 
 # temporary stuff
-**/temp*
+**/temp*.*
 **/*[sS][cC][rR][aA][tT][cC][hH]*
 
 # models

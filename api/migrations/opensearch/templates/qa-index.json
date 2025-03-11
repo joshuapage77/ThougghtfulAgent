@@ -1,0 +1,45 @@
+{
+  "index": "qa-index",
+  "body": {
+    "settings": {
+      "index.knn": true
+    },
+    "mappings": {
+      "dynamic": "strict",
+      "properties": {
+        "question": {
+          "type": "text"
+        },
+        "questionEmbedding": {
+          "type": "knn_vector",
+          "dimension": 768,
+          "method": {
+            "engine": "lucene",
+            "name": "hnsw",
+            "space_type": "l2",
+            "parameters": {
+              "ef_construction": 256,
+              "m": 32
+            }
+          }
+        },
+        "answer": {
+          "type": "text"
+        },
+        "answerEmbedding": {
+          "type": "knn_vector",
+          "dimension": 768,
+          "method": {
+            "engine": "lucene",
+            "name": "hnsw",
+            "space_type": "l2",
+            "parameters": {
+              "ef_construction": 256,
+              "m": 32
+            }
+          }
+        }
+      }
+    }
+  }
+}
