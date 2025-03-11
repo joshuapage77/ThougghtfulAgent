@@ -1,5 +1,5 @@
 # Thoughful Agent
-This implements a customer support AI Agent to assist users with basic questions about Thoughtful AI. The agent will use predefined, hardcoded responses to answer [common questions](https://github.com/joshuapage77/ThougghtfulAgent/blob/master/api/migrations/opensearch/data/thoughtfulqa.json) about Thoughtful AI as well as information about it's own tech stack.
+This implements a customer support AI Agent to assist users with basic questions about Thoughtful AI. The agent will use predefined, hardcoded responses to populate the context to answer [common questions](https://github.com/joshuapage77/ThougghtfulAgent/blob/master/api/migrations/opensearch/data/thoughtfulqa.json) about Thoughtful AI as well as information about it's own tech stack.
 
 
 ## Implementation Overview
