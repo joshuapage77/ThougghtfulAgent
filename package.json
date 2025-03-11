@@ -9,7 +9,7 @@
     "api": "cd api && npm run dev",
     "web": "cd web && npm run dev",
     "launch": "open http://localhost:8000",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dashboard": "open http://localhost:5601"
   },
   "keywords": [],
   "author": "",

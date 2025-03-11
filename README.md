@@ -31,6 +31,7 @@ This implements a customer support AI Agent to assist users with basic questions
 * install docker CLI with the docker compose plugin
 * install npm
 * install node v23.6.0
+   * I think at least v23.0.0 is needed becuase it enables requiring esm by default, but you could probably configure that too 
 * From the project root execute: `$ npm run install-all`
    * executes `npm install` in each project
 
@@ -40,7 +41,9 @@ All three components will need to be started to run the application. They can be
 * Start API:    `$ npm run api`
 * Start Web:    `$ npm run web`
 * Launch Chat:  `$ npm run launch`
-   * or just browser to: http://localhost:8000/
+   * or just browse to: http://localhost:8000
+* Launch Opensearch Dashboard: `$ npm run dashboard`
+   * or just browse to: http://localhost:5601
 
 ## Chat Examples
 ![About ThoughtfulAi](assets/screenshots/chatExample1.png)
