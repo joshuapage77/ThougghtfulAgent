@@ -4,8 +4,10 @@
   "description": "This implements a customer support AI Agent to assist users with basic questions about Thoughtful AI. The agent will use predefined, hardcoded responses to answer common questions.",
   "main": "index.js",
   "scripts": {
-    "install-all": "npm install && cd api && npm install && cd ../web && npm install",
+    "setup": "npm install && cd api && npm install && cd ../web && npm install && cd .. && npm run docker-build",
+    "docker-build": "docker build --no-cache -t opensearch-qa-init -f docker/Dockerfile .",
     "docker": "cd docker && docker compose up -d",
+    "docker-down": "cd docker && docker compose down",
     "api": "cd api && npm run dev",
     "web": "cd web && npm run dev",
     "launch": "open http://localhost:8000",

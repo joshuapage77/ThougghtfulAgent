@@ -32,8 +32,9 @@ This implements a customer support AI Agent to assist users with basic questions
 * install npm
 * install node v23.6.0
    * I think at least v23.0.0 is needed becuase it enables requiring esm by default, but you could probably configure that too 
-* From the project root execute: `$ npm run install-all`
+* From the project root execute: `$ npm run setup`
    * executes `npm install` in each project
+   * builds the `Dockerfile` used for the `opensearch-qa-init container`
 
 ### Starting everything
 All three components will need to be started to run the application. They can be started from the root of the project in three separate terminals (or command prompts for windows users)

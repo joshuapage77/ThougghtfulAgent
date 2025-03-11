@@ -1,7 +1,7 @@
 services:
   opensearch-qa-1:
     env_file:
-        - ../.env
+        - .env
     image: opensearchproject/opensearch:latest
     container_name: opensearch-qa-1
     environment:
@@ -35,7 +35,7 @@ services:
 
   opensearch-qa-2:
     env_file:
-      - ../.env
+      - .env
     image: opensearchproject/opensearch:latest
     container_name: opensearch-qa-2
     environment:
@@ -111,18 +111,18 @@ services:
     command: migrate -X
 
   opensearch-qa-init:
-    image: node:latest
+    image: opensearch-qa-init
     container_name: opensearch-qa-init
     depends_on:
       opensearch-qa-1:
         condition: service_healthy
     volumes:
-      - ../api:/api
+      - ../api/migrations:/api/migrations  # Share database migrations
+      - ../api/models:/api/models          # Share large LLM models
+      - ../api/prompts:/api/prompts        # Share prompt definitions
+      - ../api/src:/api/src                # Share source code for live updates
     networks:
       - thoughtful-backend
-    working_dir: /api
-    entrypoint: ["node", "./src/utils/scripts/opensearchAutomate.js"]
-
 
 volumes:
   opensearch-qa-data1:
