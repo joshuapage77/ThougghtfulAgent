@@ -1,5 +1,6 @@
 # Settings
 .env
+!/.env
 
 # Uncompressed data
 **/data/*.csv
