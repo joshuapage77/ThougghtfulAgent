@@ -1,12 +1,21 @@
 # Thoughful Agent
-This implements a customer support AI Agent to assist users with basic questions about Thoughtful AI. The agent will use predefined, hardcoded responses to answer common questions.
+This implements a customer support AI Agent to assist users with basic questions about Thoughtful AI. The agent will use predefined, hardcoded responses to answer [common questions](https://github.com/joshuapage77/ThougghtfulAgent/blob/5d91b49634ddcc7e0003d1f4064a5d0ce8004981/api/migrations/opensearch/data/thoughtfulqa.json) about Thoughtful AI as well as information about it's own tech stack.
+
 
 ## Implementation Overview
-* The `docker` folder has a docker-compose.yml which defines an opensearch cluster and postgres DB
+* The [docker](https://github.com/joshuapage77/ThougghtfulAgent/tree/5d91b49634ddcc7e0003d1f4064a5d0ce8004981/docker) folder has a docker-compose.yml which defines an opensearch cluster and postgres DB
+
+### Structure
+* api - Node project using KOA framework to implement the backend
+* web - Simple html front end served by http-server library
+* docker - contains docker-compose.yml which creates containers for Opensearch cluser, Postgres, Flyway, and Opensearch-init
+
+### API - KOA / Node.js
 * The api is built using KOA
 * Using gpt4all for completions. I didn't what there to be a requirement to have an OpenAI key in order to test this
    * This restricted me from using streaming results (only supported in python and I was already down the road of using node)
 * Using transformers.js to generate embeddings (same reason as above)
+* More information in that [project's README.md](https://github.com/joshuapage77/ThougghtfulAgent/tree/5d91b49634ddcc7e0003d1f4064a5d0ce8004981/api)
 
 ### Lookup
 * The sample data will be preprocessed and indexed in opensearch
@@ -20,11 +29,6 @@ This implements a customer support AI Agent to assist users with basic questions
 * POST /thoughtful/init - Starts a new conversation
 * GET  /thoughtful/chat/:convId - list the conversation history
 * POST /thoughtful/chat/:convId - send a new message
-
-## Structure
-* api - Node project using KOA framework to implement the backend
-* web - Simple html front end served by http-server library
-* docker - contains docker-compose.yml which creates containers for Opensearch cluser, Postgres, Flyway, and Opensearch-init
 
 ## Running Locally
 ### Prerequisites
